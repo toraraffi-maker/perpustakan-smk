@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LibBot - Asisten Perpustakaan Modern</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Memuat Lucide Icons untuk estetika ikon modern -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Kustomisasi scrollbar halus */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.3);
+            border-radius: 20px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(75, 85, 99, 0.5);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased overflow-hidden h-screen flex transition-colors duration-300">
+
+    <!-- Sidebar Overlay (Khusus Mobile) -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-950/60 z-40 hidden backdrop-blur-xs transition-opacity duration-300 md:hidden"></div>
+    
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 w-72 bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 z-50 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col h-full overflow-hidden">
+            <!-- Header Sidebar -->
+            <div class="p-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary-600 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-200 dark:shadow-none">
+                        <i data-lucide="library" class="text-white w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-slate-800 dark:text-white text-lg leading-tight">EduLib</h1>
+                        <p class="text-[10px] text-primary-600 dark:text-primary-400 font-bold tracking-wider uppercase">Sistem Pintar</p>
+                    </div>
+                </div>
+                <button onclick="toggleSidebar(false)" class="md:hidden text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Menu Sidebar Utama -->
+            <div class="p-4 space-y-1 shrink-0 border-b border-slate-100 dark:border-slate-800">
+                <p class="px-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Menu Utama</p>
+                
+                <button id="btnNavChat" onclick="switchView('chat')" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all bg-primary-50 dark:bg-primary-950/40 text-primary-600 dark:text-primary-400 font-semibold text-sm">
+                    <i data-lucide="message-square" class="w-5 h-5"></i>
+                    <span>Tanya LibBot (Chat)</span>
+                </button>
+
+                <button id="btnNavKatalog" onclick="switchView('katalog')" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary-600 dark:hover:text-primary-400 font-medium text-sm">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                    <span>Cari Buku (Katalog)</span>
+                </button>
+
+                <button id="btnNavInfo" onclick="switchView('info')" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary-600 dark:hover:text-primary-400 font-medium text-sm">
+                    <i data-lucide="info" class="w-5 h-5"></i>
+                    <span>Tentang Perpustakaan</span>
+                </button>
+            </div>
+
+            <!-- Daftar Riwayat Percakapan (Siswa bisa melanjutkan/menghapus riwayat) -->
+            <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                <p class="px-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 flex justify-between items-center">
+                    <span>Riwayat Chat</span>
+                    <button onclick="confirmClearHistory()" class="text-[10px] text-rose-500 hover:underline capitalize font-semibold">Hapus Semua</button>
+                </p>
+                <div id="historyList" class="space-y-1">
+                    <!-- Dinamis dimuat lewat Javascript -->
+                </div>
+            </div>
+
+            <!-- Menu Pengaturan & API Setup -->
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800 shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
+                <button onclick="openSettingsModal()" class="w-full py-2.5 px-3 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 rounded-xl transition-all flex items-center justify-center gap-2 shadow-xs">
+                    <i data-lucide="settings" class="w-4 h-4 text-slate-500 dark:text-slate-400"></i>
+                    Pengaturan API Key
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden">
+        
+        <!-- Header Atas -->
+        <header class="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 px-6 py-4 flex items-center justify-between shrink-0 shadow-xs z-30">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar(true)" class="md:hidden p-2 -ml-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <div>
+                    <h2 id="viewTitle" class="text-base md:text-lg font-bold text-slate-800 dark:text-white leading-tight">Tanya LibBot</h2>
+                    <p id="viewSubtitle" class="text-xs text-slate-400 dark:text-slate-500">Asisten AI Perpustakaan Digital</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <!-- Toggle Dark Mode -->
+                <button onclick="toggleDarkMode()" class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all" title="Ubah Tema">
+                    <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+                <!-- Hapus Sesi Obrolan Aktif -->
+                <button id="btnResetChat" onclick="resetActiveChat()" class="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-all" title="Mulai Obrolan Baru">
+                    <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- VIEW 1: CHAT INTERAKTIF -->
+        <section id="viewChat" class="flex-1 flex flex-col min-h-0 bg-white dark:bg-slate-900 transition-colors">
+            <!-- Area Percakapan -->
+            <div id="chatContainer" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 custom-scrollbar">
+                <!-- Pesan pembuka akan dimasukkan lewat JS -->
+            </div>
+
+            <!-- Area Input Teks & Tombol Pintasan -->
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+                <div class="max-w-4xl mx-auto space-y-4">
+                    
+                    <!-- Quick Actions Row -->
+                    <div class="flex overflow-x-auto pb-1 gap-2 hide-scrollbar">
+                        <button onclick="handleQuickAction('Cari Buku')" class="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 bg-slate-50 dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-primary-950/40 text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 text-xs font-medium rounded-full transition-all border border-slate-100 dark:border-slate-700 shadow-2xs">
+                            <span>📚 Cari Buku</span>
+                        </button>
+                        <button onclick="handleQuickAction('Rekomendasi Buku')" class="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 bg-slate-50 dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-primary-950/40 text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 text-xs font-medium rounded-full transition-all border border-slate-100 dark:border-slate-700 shadow-2xs">
+                            <span>⭐ Rekomendasi Buku</span>
+                        </button>
+                        <button onclick="handleQuickAction('Jam Buka')" class="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 bg-slate-50 dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-primary-950/40 text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 text-xs font-medium rounded-full transition-all border border-slate-100 dark:border-slate-700 shadow-2xs">
+                            <span>🕒 Jam Buka</span>
+                        </button>
+                        <button onclick="handleQuickAction('Buku Populer')" class="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 bg-slate-50 dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-primary-950/40 text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 text-xs font-medium rounded-full transition-all border border-slate-100 dark:border-slate-700 shadow-2xs">
+                            <span>📖 Buku Populer</span>
+                        </button>
+                    </div>
+
+                    <!-- Input Box Utama -->
+                    <div class="relative flex items-end gap-2">
+                        <textarea id="chatInput" placeholder="Ketik pesan di sini... (contoh: 'Ada buku komputer?')" rows="1" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-2xl pl-4 pr-12 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-none max-h-32 min-h-[48px] transition-all custom-scrollbar" onkeydown="handleInputKeydown(event)"></textarea>
+                        <button id="btnSend" onclick="handleSendMessage()" class="absolute right-2.5 bottom-2.5 p-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl transition-all shadow-md shrink-0">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="text-center">
+                        <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium">LibBot bertenaga AI dapat membuat kekeliruan. Silakan tanyakan pustakawan sekolah untuk ketersediaan riil.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: KATALOG BUKU -->
+        <section id="viewKatalog" class="flex-1 flex flex-col min-h-0 bg-slate-50/50 dark:bg-slate-900/40 hidden">
+            <!-- Pencarian & Kategori -->
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
+                <div class="max-w-4xl mx-auto space-y-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-1">Cari Koleksi Buku</h3>
+                        <p class="text-xs text-slate-400 dark:text-slate-500">Gunakan filter untuk mempercepat pencarian judul, penulis, atau kategori.</p>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="relative flex-1">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="katalogSearch" placeholder="Cari judul buku atau penulis..." oninput="filterKatalog()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl pl-11 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all">
+                        </div>
+                        <select id="katalogCategory" onchange="filterKatalog()" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all shrink-0">
+                            <option value="">Semua Kategori</option>
+                            <option value="Komputer/IT">Komputer & IT</option>
+                            <option value="Sains & Alam">Sains & Alam</option>
+                            <option value="Sastra & Novel">Sastra & Novel</option>
+                            <option value="Sejarah">Sejarah</option>
+                            <option value="Fiksi Fantasi">Fiksi Fantasi</option>
+                            <option value="Pengembangan Diri">Pengembangan Diri</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Grid Menampilkan Daftar Buku -->
+            <div class="flex-1 overflow-y-auto p-6 max-w-4xl mx-auto w-full custom-scrollbar">
+                <div id="katalogGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Data buku di-generate lewat Javascript -->
+                </div>
+                <!-- Jika tidak ditemukan -->
+                <div id="emptyKatalog" class="hidden text-center py-16 text-slate-400">
+                    <i data-lucide="book-open" class="w-12 h-12 mx-auto mb-3 opacity-20"></i>
+                    <p class="text-sm font-medium">Maaf, buku yang kamu cari belum terdaftar di perpustakaan.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: TENTANG PERPUSTAKAAN -->
+        <section id="viewInfo" class="flex-1 overflow-y-auto p-6 bg-slate-50/50 dark:bg-slate-900/40 hidden custom-scrollbar">
+            <div class="max-w-3xl mx-auto space-y-6 pb-8">
+                
+                <!-- Kartu Jam Kerja -->
+                <div class="bg-gradient-to-br from-primary-50 to-blue-100/50 dark:from-primary-950/20 dark:to-blue-950/20 p-6 rounded-2xl border border-primary-100 dark:border-primary-900 shadow-sm">
+                    <h3 class="font-bold text-primary-900 dark:text-primary-300 flex items-center gap-2.5 mb-4">
+                        <i data-lucide="clock" class="w-5 h-5 text-primary-600 dark:text-primary-400"></i> Jam Operasional Perpustakaan
+                    </h3>
+                    <div class="space-y-3.5 text-sm text-primary-900/80 dark:text-slate-300">
+                        <div class="flex justify-between border-b border-primary-100/60 dark:border-primary-900 pb-2">
+                            <span class="font-medium">Senin - Kamis</span>
+                            <span class="font-bold">07:00 - 15:30 WIB</span>
+                        </div>
+                        <div class="flex justify-between border-b border-primary-100/60 dark:border-primary-900 pb-2">
+                            <span class="font-medium">Jumat</span>
+                            <span class="font-bold">07:00 - 14:00 WIB</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Jam Istirahat (Tutup Sementara)</span>
+                            <span class="font-bold text-amber-600 dark:text-amber-400">12:00 - 13:00 WIB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Peraturan Meminjam Buku -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2.5">
+                        <i data-lucide="check-circle" class="text-emerald-500 w-5 h-5"></i> Aturan & Tata Tertib Siswa
+                    </h3>
+                    <ul class="space-y-3 text-slate-600 dark:text-slate-400 text-sm">
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5 bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 font-bold">1</span>
+                            <span>Siswa diperbolehkan meminjam maksimal <strong>3 buku</strong> sekaligus.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5 bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 font-bold">2</span>
+                            <span>Batas waktu maksimal peminjaman adalah <strong>7 hari kalender</strong>.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5 bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 font-bold">3</span>
+                            <span>Keterlambatan pengembalian dikenakan sanksi denda administratif Rp500/hari atau pembekuan kartu anggota selama 1 minggu.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5 bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 font-bold">4</span>
+                            <span>Dilarang keras membawa makanan atau minuman berwarna/terbuka ke area meja baca.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Profil Tim Perpustakaan -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-6 rounded-2xl shadow-sm">
+                    <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2.5 mb-4">
+                        <i data-lucide="users" class="text-primary-600 w-5 h-5"></i> Pengelola Perpustakaan
+                    </h3>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center font-bold text-slate-500 dark:text-slate-400">
+                            IB
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-slate-800 dark:text-white text-sm">Ibu Budiarti, S.I.Pust.</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Kepala Pustakawan Sekolah</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL 1: SETTING API KEY -->
+    <div id="settingsModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-xs">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-xl border border-slate-100 dark:border-slate-800 transform transition-all">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-primary-100 dark:bg-primary-950 text-primary-600 dark:text-primary-400 rounded-xl flex items-center justify-center">
+                    <i data-lucide="key" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-800 dark:text-white">Pengaturan API Key</h3>
+                    <p class="text-xs text-slate-400 dark:text-slate-500">Gunakan API Key pribadimu untuk kestabilan</p>
+                </div>
+            </div>
+            
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                LibBot mendukung integrasi langsung ke **OpenAI API (GPT-4o-mini)** atau **Google Gemini API**. Jika kosong, sistem otomatis menggunakan asisten simulasi lokal.
+            </p>
+
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">Pilih Mesin AI</label>
+                    <select id="apiEngine" onchange="toggleApiFields()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20">
+                        <option value="offline">Simulasi Offline (Tanpa Kunci)</option>
+                        <option value="openai">OpenAI API (GPT-4o-mini)</option>
+                        <option value="gemini">Google Gemini API (3-Flash)</option>
+                    </select>
+                </div>
+
+                <div id="apiInputContainer" class="hidden">
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">Kunci API (Secret Key)</label>
+                    <input type="password" id="apiKeyInput" placeholder="sk-..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20">
+                    <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1.5 leading-relaxed">
+                        Data kunci hanya disimpan secara lokal di browser Anda (*localStorage*) dan tidak pernah dikirimkan ke pihak ketiga selain penyedia API terkait.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-2.5">
+                <button onclick="closeSettingsModal()" class="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold text-xs rounded-xl transition-all">Batal</button>
+                <button onclick="saveSettings()" class="flex-1 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold text-xs rounded-xl transition-all shadow-md">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: KONFIRMASI HAPUS RIWAYAT -->
+    <div id="confirmModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-xs">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-xs w-full p-6 shadow-xl border border-slate-100 dark:border-slate-800">
+            <div class="text-center space-y-3 mb-5">
+                <div class="w-12 h-12 bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center mx-auto">
+                    <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 dark:text-white text-base">Hapus Riwayat Chat?</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Seluruh riwayat obrolan yang tersimpan akan dihapus selamanya secara permanen.</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold text-xs rounded-xl transition-all">Batal</button>
+                <button onclick="clearAllHistoryConfirmed()" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl transition-all shadow-md">Ya, Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
