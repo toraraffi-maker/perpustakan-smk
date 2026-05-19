@@ -581,77 +581,167 @@
                     return "Perpustakaan PerpusSMK dikelola secara profesional oleh **Ibu Budiarti, S.I.Pust.** selaku Kepala Pustakawan Sekolah kita. Beliau sangat ramah dan siap membantumu di meja sirkulasi!";
                 }
 
-                // 6. Intent Sinopsis / Deskripsi Detail Buku (Fitur Baru)
-                const isAskingDescription = query.includes('sinopsis') || query.includes('isi') || query.includes('jelaskan') || query.includes('deskripsi') || query.includes('tentang');
-                
-                // Cari kecocokan buku spesifik
-                const matchedBook = libraryBooks.find(b => {
-                    const titleWords = b.title.toLowerCase().split(' ');
-                    // Cocokkan jika judul buku terkandung dalam teks atau kata kunci utama cocok
-                    return query.includes(b.title.toLowerCase()) || 
-                           (query.includes(' bandit') && b.id === 2) ||
-                           (query.includes('badai') && b.id === 3) ||
-                           (query.includes('branding') && b.id === 4) ||
-                           (query.includes('brief') && b.id === 5) ||
-                           (query.includes('administrasi') && b.id === 6) ||
-                           ((query.includes('gim') || query.includes('perangkat lunak')) && b.id === 1);
-                });
+                // 6. Intent Sinopsis / Deskripsi Detail Buku
+const isAskingDescription =
+    query.includes('sinopsis') ||
+    query.includes('isi') ||
+    query.includes('jelaskan') ||
+    query.includes('deskripsi') ||
+    query.includes('tentang');
 
-                if (matchedBook) {
-                    if (isAskingDescription) {
-                        return `Tentu! Buku **"${matchedBook.title}"** karya *${matchedBook.author}* membahas:\n\n"${matchedBook.description}"\n\n📌 **Lokasi:** ${matchedBook.shelf}\n⚡ **Status:** ${matchedBook.status}`;
-                    } else {
-                        // Tanya ketersediaan umum
-                        if (matchedBook.status === 'Tersedia') {
-                            return `Kabar baik! Buku **"${matchedBook.title}"** karya *${matchedBook.author}* berstatus **Tersedia**. Kamu bisa langsung mengambilnya di **${matchedBook.shelf}**. \n\nApakah kamu mau aku jelaskan sinopsis singkat isi bukunya?`;
-                        } else {
-                            // Carikan buku alternatif kategori sejenis
-                            const alt = libraryBooks.find(b => b.category === matchedBook.category && b.status === 'Tersedia');
-                            let responseText = `Waduh, maaf sekali. Buku **"${matchedBook.title}"** saat ini sedang **Dipinjam**. 😢\n\n`;
-                            if (alt) {
-                                responseText += `Sebagai alternatif di kategori **${matchedBook.category}**, aku merekomendasikan buku **"${alt.title}"** (*${alt.author}*) yang berstatus **Tersedia** di **${alt.shelf}**.\n\nMau kuambilkan buku alternatifnya?`;
-                            } else {
-                                responseText += `Silakan cari buku kategori lain di tab katalog atau hubungi Ibu Budiarti untuk melakukan inden antrean buku ini.`;
-                            }
-                            return responseText;
-                        }
-                    }
-                }
-                const foundBook = libraryBooks.some(book => query.includes(book.title.toLowerCase()) ); 
-                if ( (query.includes('buku') || query.includes('novel') || query.includes('cerita') || query.includes('komik') || query.includes('dongeng') || query.includes('rakyat')) && !foundBook ) { return "Maaf 😅 Buku yang kamu cari belum tersedia di katalog PerpusSMK saat ini.\n\nSilakan coba cari judul buku lain atau buka menu **Katalog Buku** untuk melihat koleksi yang tersedia 📚"; }
-                // 7. Intent Rekomendasi Kategori / Umum
-                if (query.includes('rekomendasi') || query.includes('rekomendasikan') || query.includes('saran') || query.includes('bagus') || query.includes('populer')) {
-                    if (query.includes('it') || query.includes('gim') || query.includes('coding') || query.includes('pplg')) {
-                        const book = libraryBooks.find(b => b.id === 1);
-                        return `Untuk kategori **IT/Pemrograman**, rekomendasi utama adalah **"${book.title}"** karya *${book.author}* di **${book.shelf}**. Membahas dasar algoritma yang sangat mudah dipahami pemula.`;
-                    }
-                    if (query.includes('novel') || query.includes('fiksi') || query.includes('cerita')) {
-                        const book = libraryBooks.find(b => b.id === 2);
-                        return `Suka cerita petualangan seru? Kamu wajib membaca novel **"${book.title}"** karya *${book.author}* di **${book.shelf}**. Kisahnya sangat memotivasi dan penuh misteri menegangkan!`;
-                    }
-                    if (query.includes('pengembangan diri') || query.includes('mental') || query.includes('psikologi')) {
-                        const book = libraryBooks.find(b => b.id === 3);
-                        return `Jika mencari motivasi diri, coba baca **"${book.title}"** karya *${book.author}* di **${book.shelf}**. Sangat pas untuk merenung dan mengelola kecemasan anak remaja.`;
-                    }
-                    
-                    // Rekomendasi umum buku acak yang tersedia
-                    const availableBooks = libraryBooks.filter(b => b.status === 'Tersedia');
-                    const recommended = availableBooks[Math.floor(Math.random() * availableBooks.length)];
-                    return `Ini salah satu rekomendasi buku terbaik hari ini yang **Tersedia** untuk dipinjam:\n\n📖 **"${recommended.title}"** oleh *${recommended.author}* (${recommended.category}).\n\n**Sinopsis singkat:** ${recommended.description}\n\nKamu bisa mengambilnya langsung di **${recommended.shelf}**!`;
-                }
+// Cari kecocokan buku spesifik
+const matchedBook = libraryBooks.find(b => {
+    return query.includes(b.title.toLowerCase()) || 
+           (query.includes(' bandit') && b.id === 2) ||
+           (query.includes('badai') && b.id === 3) ||
+           (query.includes('branding') && b.id === 4) ||
+           (query.includes('brief') && b.id === 5) ||
+           (query.includes('administrasi') && b.id === 6) ||
+           ((query.includes('gim') || query.includes('perangkat lunak')) && b.id === 1);
+});
 
-                
+if (matchedBook) {
+    if (isAskingDescription) {
+        return `Tentu! Buku **"${matchedBook.title}"** karya *${matchedBook.author}* membahas:\n\n"${matchedBook.description}"\n\n📌 **Lokasi:** ${matchedBook.shelf}\n⚡ **Status:** ${matchedBook.status}`;
+    } else {
+        if (matchedBook.status === 'Tersedia') {
+            return `Kabar baik! Buku **"${matchedBook.title}"** karya *${matchedBook.author}* berstatus **Tersedia**. Kamu bisa langsung mengambilnya di **${matchedBook.shelf}**.\n\nApakah kamu mau aku jelaskan sinopsis singkat isi bukunya?`;
+        } else {
+            const alt = libraryBooks.find(
+                b => b.category === matchedBook.category && b.status === 'Tersedia'
+            );
 
-                // 8. Pencarian Kategori Umum
-                if (query.includes('it') || query.includes('pplg') || query.includes('gim')) {
-                    return "Untuk kategori **IT**, kita memiliki buku *\"Dasar-Dasar Pengembangan Perangkat Lunak dan Gim\"* di Rak IT-01. Buku ini sangat cocok untuk memulai dasar belajar pemrograman!";
-                }
-                if (query.includes('novel') || query.includes('fiksi')) {
-                    return "Di kategori **Novel**, kita punya buku terlaris *\"Tanah Para Bandit\"* karya Tere Liye (Rak NV-01) dan buku emosional *\"Manusia dan Badainya\"* karya Syahid Muhammad (Rak NV-02).";
-                }
+            let responseText =
+                `Waduh, maaf sekali. Buku **"${matchedBook.title}"** saat ini sedang **Dipinjam**. 😢\n\n`;
 
-                // 9. Fallback Default (Relevan Perpustakaan tapi polanya tidak spesifik)
-                return "Aku mengerti pertanyaanmu seputar perpustakaan. 😊 Namun, agar jawabanku lebih akurat, bolehkah kamu sebutkan judul buku yang ingin kamu cari secara spesifik? Atau tanyakan info jam kerja, denda, dan sinopsis buku ke aku!";
+            if (alt) {
+                responseText +=
+                    `Sebagai alternatif di kategori **${matchedBook.category}**, aku merekomendasikan buku **"${alt.title}"** (*${alt.author}*) yang berstatus **Tersedia** di **${alt.shelf}**.\n\nMau kuambilkan buku alternatifnya?`;
+            } else {
+                responseText +=
+                    `Silakan cari buku kategori lain di tab katalog atau hubungi Ibu Budiarti untuk melakukan inden antrean buku ini.`;
+            }
+
+            return responseText;
+        }
+    }
+}
+
+// 7. Intent Rekomendasi
+if (
+    query.includes('rekomendasi') ||
+    query.includes('rekomendasikan') ||
+    query.includes('saran') ||
+    query.includes('bagus') ||
+    query.includes('populer')
+) {
+
+    if (
+        query.includes('it') ||
+        query.includes('gim') ||
+        query.includes('coding') ||
+        query.includes('pplg')
+    ) {
+
+        const book = libraryBooks.find(b => b.id === 1);
+
+        return `Untuk kategori **IT/Pemrograman**, rekomendasi utama adalah **"${book.title}"** karya *${book.author}* di **${book.shelf}**. Membahas dasar algoritma yang sangat mudah dipahami pemula.`;
+    }
+
+    if (
+        query.includes('novel') ||
+        query.includes('fiksi') ||
+        query.includes('cerita')
+    ) {
+
+        const book = libraryBooks.find(b => b.id === 2);
+
+        return `Suka cerita petualangan seru? Kamu wajib membaca novel **"${book.title}"** karya *${book.author}* di **${book.shelf}**. Kisahnya sangat memotivasi dan penuh misteri menegangkan!`;
+    }
+
+    if (
+        query.includes('pengembangan diri') ||
+        query.includes('mental') ||
+        query.includes('psikologi')
+    ) {
+
+        const book = libraryBooks.find(b => b.id === 3);
+
+        return `Jika mencari motivasi diri, coba baca **"${book.title}"** karya *${book.author}* di **${book.shelf}**. Sangat pas untuk merenung dan mengelola kecemasan anak remaja.`;
+    }
+
+    // rekomendasi random
+    const availableBooks = libraryBooks.filter(
+        b => b.status === 'Tersedia'
+    );
+
+    const recommended =
+        availableBooks[Math.floor(Math.random() * availableBooks.length)];
+
+    return `Ini salah satu rekomendasi buku terbaik hari ini yang **Tersedia** untuk dipinjam:\n\n📖 **"${recommended.title}"** oleh *${recommended.author}* (${recommended.category}).\n\n**Sinopsis singkat:** ${recommended.description}\n\nKamu bisa mengambilnya langsung di **${recommended.shelf}**!`;
+}
+
+// 8. Validasi Buku Tidak Ditemukan
+
+const foundBook = libraryBooks.find(book =>
+    query.includes(book.title.toLowerCase()) ||
+    query.includes(book.author.toLowerCase()) ||
+    query.includes(book.category.toLowerCase())
+);
+
+// Kalau user mencari kategori umum
+if (query.includes('novel')) {
+
+    const novels = libraryBooks.filter(
+        b => b.category.toLowerCase() === 'novel'
+    );
+
+    if (novels.length > 0) {
+
+        let result = "📚 Koleksi novel yang tersedia di PerpusSMK:\n\n";
+
+        novels.forEach((book, index) => {
+            result += `${index + 1}. "${book.title}" - ${book.author} (${book.status})\n`;
+        });
+
+        return result;
+    }
+}
+
+// Kalau benar-benar tidak ditemukan
+if (
+    (
+        query.includes('buku') ||
+        query.includes('novel') ||
+        query.includes('cerita') ||
+        query.includes('komik')
+    ) &&
+    !foundBook
+) {
+
+    return `Maaf 😅 Buku yang kamu cari belum tersedia di katalog PerpusSMK saat ini.\n\nSilakan coba cari judul buku lain atau buka menu **Katalog Buku** untuk melihat koleksi yang tersedia 📚`;
+}
+
+// 9. Pencarian Kategori Umum
+if (
+    query.includes('it') ||
+    query.includes('pplg') ||
+    query.includes('gim')
+) {
+
+    return `Untuk kategori **IT**, kita memiliki buku *"Dasar-Dasar Pengembangan Perangkat Lunak dan Gim"* di Rak IT-01. Buku ini sangat cocok untuk memulai dasar belajar pemrograman!`;
+}
+
+if (
+    query.includes('novel') ||
+    query.includes('fiksi')
+) {
+
+    return `Di kategori **Novel**, kita punya buku terlaris *"Tanah Para Bandit"* karya Tere Liye (Rak NV-01) dan buku emosional *"Manusia dan Badainya"* karya Syahid Muhammad (Rak NV-02).`;
+}
+
+// 10. Fallback Default
+return "Aku mengerti pertanyaanmu seputar perpustakaan. 😊 Namun, agar jawabanku lebih akurat, bolehkah kamu sebutkan judul buku yang ingin kamu cari secara spesifik? Atau tanyakan info jam kerja, denda, dan sinopsis buku ke aku!";
             }
         }
 
