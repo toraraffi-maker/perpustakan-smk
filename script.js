@@ -617,7 +617,8 @@
                         }
                     }
                 }
-
+                const foundBook = libraryBooks.some(book => query.includes(book.title.toLowerCase()) ); 
+                if ( (query.includes('buku') || query.includes('novel') || query.includes('cerita') || query.includes('komik') || query.includes('dongeng') || query.includes('rakyat')) && !foundBook ) { return "Maaf 😅 Buku yang kamu cari belum tersedia di katalog PerpusSMK saat ini.\n\nSilakan coba cari judul buku lain atau buka menu **Katalog Buku** untuk melihat koleksi yang tersedia 📚"; }
                 // 7. Intent Rekomendasi Kategori / Umum
                 if (query.includes('rekomendasi') || query.includes('rekomendasikan') || query.includes('saran') || query.includes('bagus') || query.includes('populer')) {
                     if (query.includes('it') || query.includes('gim') || query.includes('coding') || query.includes('pplg')) {
@@ -638,6 +639,8 @@
                     const recommended = availableBooks[Math.floor(Math.random() * availableBooks.length)];
                     return `Ini salah satu rekomendasi buku terbaik hari ini yang **Tersedia** untuk dipinjam:\n\n📖 **"${recommended.title}"** oleh *${recommended.author}* (${recommended.category}).\n\n**Sinopsis singkat:** ${recommended.description}\n\nKamu bisa mengambilnya langsung di **${recommended.shelf}**!`;
                 }
+
+                
 
                 // 8. Pencarian Kategori Umum
                 if (query.includes('it') || query.includes('pplg') || query.includes('gim')) {
