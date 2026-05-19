@@ -1,30 +1,77 @@
- // Database JSON Internal - Daftar Koleksi Buku Perpustakaan
+// Database JSON Internal - Daftar Koleksi Buku Perpustakaan Baru & Lengkap Deskripsi
         const libraryBooks = [
-            { id: 1, title: 'Dasar Pemrograman Python', author: 'Budi Santoso', category: 'Komputer/IT', status: 'Tersedia', shelf: 'Rak K-01' },
-            { id: 2, title: 'Laskar Pelangi', author: 'Andrea Hirata', category: 'Sastra & Novel', status: 'Tersedia', shelf: 'Rak S-05' },
-            { id: 3, title: 'Bumi Manusia', author: 'Pramoedya Ananta Toer', category: 'Sastra & Novel', status: 'Dipinjam', shelf: 'Rak S-06' },
-            { id: 4, title: 'Biologi Sel Edisi Terbaru', author: 'Neil A. Campbell', category: 'Sains & Alam', status: 'Tersedia', shelf: 'Rak P-03' },
-            { id: 5, title: 'Seni Berpikir Jernih (Art of Thinking Clearly)', author: 'Rolf Dobelli', category: 'Pengembangan Diri', status: 'Tersedia', shelf: 'Rak D-02' },
-            { id: 6, title: 'Python untuk Pemula & Menengah', author: 'Siti Aminah', category: 'Komputer/IT', status: 'Dipinjam', shelf: 'Rak K-01' },
-            { id: 7, title: 'Sejarah Indonesia Modern', author: 'M.C. Ricklefs', category: 'Sejarah', status: 'Tersedia', shelf: 'Rak H-01' },
-            { id: 8, title: 'Fisika Dasar Terapan', author: 'Prof. Yohanes Surya', category: 'Sains & Alam', status: 'Tersedia', shelf: 'Rak P-02' },
-            { id: 9, title: 'Bumi (Saga Dunia Paralel)', author: 'Tere Liye', category: 'Fiksi Fantasi', status: 'Tersedia', shelf: 'Rak F-01' },
-            { id: 10, title: 'Bulan (Saga Dunia Paralel)', author: 'Tere Liye', category: 'Fiksi Fantasi', status: 'Dipinjam', shelf: 'Rak F-01' }
+            { 
+                id: 1, 
+                title: 'Dasar-Dasar Pengembangan Perangkat Lunak dan Gim', 
+                author: 'Okta Purnawirawan', 
+                category: 'IT', 
+                status: 'Tersedia', 
+                shelf: 'Rak IT-01',
+                description: 'Buku ini adalah panduan lengkap pengantar dunia pemrograman kejuruan (PPLG) kelas X SMK. Membahas dasar-dasar algoritma, logika pemrograman komputer, pengenalan tools coding terpopuler, hingga konsep industri kreatif pembuatan game serta perencanaan karir di industri perangkat lunak.'
+            },
+            { 
+                id: 2, 
+                title: 'Tanah Para Bandit', 
+                author: 'Tere Liye', 
+                category: 'Novel', 
+                status: 'Tersedia', 
+                shelf: 'Rak NV-01',
+                description: 'Sebuah novel aksi petualangan epik dari penulis ternama Tere Liye. Mengisahkan tentang perjuangan karakter utama bernama Soleh dalam menghadapi ketidakadilan sosial, konspirasi politik gelap, serta perjalanannya melawan komplotan kriminal mafia penjahat kelas kakap dengan pesan mendalam tentang loyalitas dan integritas diri.'
+            },
+            { 
+                id: 3, 
+                title: 'Manusia dan Badainya', 
+                author: 'Syahid Muhammad', 
+                category: 'Novel', 
+                status: 'Dipinjam', 
+                shelf: 'Rak NV-02',
+                description: 'Buku fiksi pengembangan diri yang sangat menyentuh hati remaja. Menjelaskan tentang eksplorasi mendalam atas isu kesehatan mental, perjuangan menghadapi badai emosional masa transisi dewasa muda, cara memahami kecemasan psikologis, serta petunjuk berdamai dengan luka masa lalu demi tumbuh lebih tangguh.'
+            },
+            { 
+                id: 4, 
+                title: 'Digital Branding', 
+                author: 'Devi Puspitasari', 
+                category: 'Pemasaran', 
+                status: 'Tersedia', 
+                shelf: 'Rak PM-01',
+                description: 'Buku panduan praktis pemasaran digital modern. Membahas esensi pembentukan identitas brand secara online, cara melakukan riset target audiens di media sosial, teknik penulisan konten promosi yang persuasif, metode optimalisasi SEO, serta kiat-kiat sukses membangun citra produk UKM di era digital.'
+            },
+            { 
+                id: 5, 
+                title: 'Menerapkan Desain Brief', 
+                author: 'A. Bobo Wasono', 
+                category: 'DKV', 
+                status: 'Tersedia', 
+                shelf: 'Rak DK-01',
+                description: 'Buku wajib untuk siswa DKV (Desain Komunikasi Visual). Fokus mengupas cara membaca dan merumuskan instruksi desain kerja (design brief) dari klien, metodologi penerjemahan konsep kreatif menjadi karya visual komersial bernilai jual, serta etika profesionalitas desainer visual.'
+            },
+            { 
+                id: 6, 
+                title: 'Administrasi Umum', 
+                author: 'Sri Endang R.', 
+                category: 'Manajemen', 
+                status: 'Dipinjam', 
+                shelf: 'Rak MJ-01',
+                description: 'Buku kejuruan manajemen perkantoran dasar yang membahas tata cara administrasi operasional. Isinya mencakup pengenalan struktur organisasi perkantoran, manajemen kearsipan dokumen fisik & digital, teknik korespondensi (surat-menyurat) formal yang efisien, serta pelayanan prima bagi tamu bisnis.'
+            }
         ];
 
-        // System Prompt untuk LibBot
+        // System Prompt Ketat untuk Mengendalikan Bot agar Tetap On-Topic
         const SYSTEM_PROMPT = `
-        Kamu adalah "LibBot", asisten AI perpustakaan sekolah yang ramah, hangat, dan sangat membantu siswa mencari buku atau info perpustakaan. 
-        Gunakan bahasa Indonesia yang natural, santai namun tetap sopan dan mudah dipahami siswa sekolah. Gunakan sesekali emoji ramah.
-        Jawablah dengan singkat, padat, dan jelas (maksimal 2-3 paragraf pendek). 
+        Nama kamu adalah "LibBot", asisten AI perpustakaan sekolah PerpusSMK yang ramah, hangat, dan profesional.
+        Gunakan bahasa Indonesia yang natural, sopan, sedikit santai, dan mudah dimengerti anak sekolah. Selalu gunakan emoji ramah.
         
-        Koleksi buku saat ini yang terdaftar di perpustakaan kita:
+        ATURAN STRATEGIS:
+        1. Kamu HANYA diperbolehkan menjawab pertanyaan seputar perpustakaan PerpusSMK:
+           - Koleksi buku, ketersediaan, pengarang, deskripsi buku, dan lokasi rak.
+           - Jam Operasional: Senin-Kamis (07:00-15:00 WIB), Jumat (07:00-11:00 WIB). Istirahat (12:00-13:00 WIB, tutup sementara).
+           - Aturan meminjam: Maksimal 3 buku, batas waktu 7 hari, denda keterlambatan Rp500/hari.
+           - Pengelola: Kepala pustakawan Ibu Budiarti, S.I.Pust.
+        2. Jika pengguna menanyakan hal yang sama sekali TIDAK RELEVAN/Luar Topik (misalnya: resep masakan, pemrograman murni seperti "buatkan kode web python", matematika sekolah, politik global, cuaca, dll), jawablah dengan sopan:
+           "Aduh maaf ya... 😅 Sebagai asisten PerpusSMK, aku hanya diprogram untuk membantumu seputar perpustakaan, aturan pinjam, dan rekomendasi buku-buku kita di sini. Yuk, tanyakan seputar buku menarik yang ingin kamu baca!"
+        3. Jika pengguna menanyakan sinopsis, isi, atau deskripsi buku, jelaskan dengan detail menggunakan info dari database berikut:
         ${JSON.stringify(libraryBooks)}
-        
-        Aturan Jawaban:
-        1. Jika ditanya mengenai buku yang ada di daftar, sebutkan lokasinya (misal Rak K-01) dan statusnya secara rinci.
-        2. Jika dicari buku yang tidak ada atau sedang dipinjam, sarankan buku lain dari kategori sejenis yang statusnya 'Tersedia'.
-        3. Jam Buka Perpustakaan: Senin-Kamis (07:00-15:30), Jumat (07:00-14:00), Istirahat (12:00-13:00).
+        4. Jawablah secara singkat, jelas, padat (maksimal 2-3 paragraf pendek) agar siswa tidak lelah membaca jawaban panjang lebar.
         `;
 
         // State Aplikasi
@@ -152,7 +199,7 @@
 
         function createNewSession(firstUserMessage = null) {
             const id = 'session_' + Date.now();
-            const welcomeText = 'Halo! 👋 Aku **LibBot**, asisten perpustakaan digital pintarmu. Butuh rekomendasi buku seru, cari lokasi rak, atau ingin bertanya seputar jam operasional perpustakaan? Tulis saja pertanyaanmu di bawah! 😊';
+            const welcomeText = 'Halo! 👋 Aku **LibBot**, asisten perpustakaan digital PerpusSMK. Butuh info detail buku, rekomendasi bacaan seru, tata cara peminjaman, atau mencari lokasi rak? Tulis aja pertanyaanmu di bawah! 😊';
             
             const newSession = {
                 id: id,
@@ -369,13 +416,13 @@
                 switchView('katalog');
                 showToast("Pindah ke Pencarian Buku");
             } else if (actionType === 'Rekomendasi Buku') {
-                document.getElementById('chatInput').value = "Berikan aku 3 rekomendasi buku fiksi atau sejarah terbaik hari ini?";
+                document.getElementById('chatInput').value = "Berikan aku rekomendasi buku yang paling cocok dibaca saat ini?";
                 handleSendMessage();
             } else if (actionType === 'Jam Buka') {
-                document.getElementById('chatInput').value = "Perpustakaan buka jam berapa saja?";
+                document.getElementById('chatInput').value = "Perpustakaan buka jam berapa?";
                 handleSendMessage();
-            } else if (actionType === 'Buku Populer') {
-                document.getElementById('chatInput').value = "Ada daftar buku populer saat ini di perpustakaan?";
+            } else if (actionType === 'Aturan Peminjaman') {
+                document.getElementById('chatInput').value = "Apa saja syarat, tata tertib, denda, dan aturan meminjam buku di PerpusSMK?";
                 handleSendMessage();
             }
         }
@@ -418,7 +465,7 @@
             const key = localStorage.getItem('libbot_api_key') || '';
 
             if (engine === 'openai' && key) {
-                // Konfigurasi Panggilan ke OpenAI API
+                // Konfigurasi Panggilan ke OpenAI API (GPT-4o-mini)
                 const url = 'https://api.openai.com/v1/chat/completions';
                 const formattedHistory = history.slice(0, -1).map(m => ({
                     role: m.sender === 'bot' ? 'assistant' : 'user',
@@ -432,7 +479,7 @@
                         ...formattedHistory,
                         { role: 'user', content: userInput }
                     ],
-                    temperature: 0.7
+                    temperature: 0.3 // Diturunkan agar lebih stabil dan tidak berhalusinasi
                 };
 
                 const response = await fetch(url, {
@@ -466,6 +513,9 @@
                     contents: formattedContents,
                     systemInstruction: {
                         parts: [{ text: SYSTEM_PROMPT }]
+                    },
+                    generationConfig: {
+                        temperature: 0.2
                     }
                 };
 
@@ -483,49 +533,122 @@
                 return result.candidates[0].content.parts[0].text;
 
             } else {
-                // Simulasi Pintar Offline (Dijalankan tanpa API Key)
-                await new Promise(resolve => setTimeout(resolve, 1500)); // Simulasi jeda berpikir
+                // SIMULASI OFFLINE SUPER AKURAT (Mesin Logika Bahasa Pengganti API)
+                await new Promise(resolve => setTimeout(resolve, 1200)); 
+                const query = userInput.toLowerCase().trim();
+
+                // 1. Saringan Pembatasan Out of Topic (OOT) secara ketat
+                const keywordsPenunjang = [
+                    'buku', 'novel', 'perpus', 'rak', 'buka', 'tutup', 'jam', 'denda', 'pinjam', 'kembali', 'kembalikan',
+                    'syarat', 'aturan', 'tata tertib', 'pustakawan', 'petugas', 'pengelola', 'budiarti', 'rekomendasi',
+                    'it', 'gim', 'pplg', 'desain', 'dkv', 'pemasaran', 'manajemen', 'sinopsis', 'isi', 'tentang', 'jelaskan',
+                    'halo', 'hai', 'pagi', 'siang', 'sore', 'malam', 'assalamualaikum', 'salam', 'terima kasih', 'makasih', 'bot'
+                ];
+
+                // Memeriksa apakah ada kata penunjang perpustakaan dalam query
+                const hasRelevance = keywordsPenunjang.some(kw => query.includes(kw));
                 
-                const query = userInput.toLowerCase();
-                
-                // Cari apakah menyebutkan judul buku
-                const matchedBook = libraryBooks.find(b => query.includes(b.title.toLowerCase()) || query.includes(b.author.toLowerCase()));
-                
-                if (query.includes('rekomendasi') || query.includes('buku seru') || query.includes('rekomendasikan')) {
-                    const recommended = libraryBooks.filter(b => b.status === 'Tersedia').slice(0, 3);
-                    let reply = "Tentu! Ini beberapa rekomendasi buku seru yang saat ini **Tersedia** dan siap dipinjam: 😊\n\n";
-                    recommended.forEach(b => {
-                        reply += `📖 **${b.title}** karya *${b.author}* (${b.category}) - Tersimpan di **${b.shelf}**.\n`;
-                    });
-                    reply += "\nKamu tertarik meminjam yang mana?";
-                    return reply;
+                // Tambahan deteksi pertanyaan OOT umum (Matematika murni, coding murni di luar konteks buku, resep makanan, dll)
+                const isExplicitOot = query.includes('resep') || query.includes('memasak') || 
+                                     (query.includes('buatkan') && query.includes('code')) || 
+                                     query.includes('cuaca') || query.includes('presiden') || 
+                                     query.includes('hitunglah') || query.includes('matematika');
+
+                if (!hasRelevance || isExplicitOot) {
+                    return "Aduh, maaf ya... 😅 Sebagai asisten **PerpusSMK**, aku hanya dilatih untuk membantumu menjawab seputar perpustakaan, aturan pinjam, lokasi rak, serta koleksi buku-buku kita. \n\nYuk, tanyakan hal seru tentang buku atau seputar operasional PerpusSMK!";
                 }
 
-                if (query.includes('jam') || query.includes('buka') || query.includes('istirahat') || query.includes('tutup')) {
-                    return "Halo! Jam operasional perpustakaan sekolah kita adalah:\n\n📅 **Senin - Kamis:** 07:00 - 15:30 WIB\n📅 **Jumat:** 07:00 - 14:00 WIB\n☕ *Jam Istirahat (Tutup Sementara): 12:00 - 13:00 WIB*";
+                // 2. Intent Sapaan / Terima kasih
+                if (query.match(/^(halo|hai|pagi|siang|sore|malam|assalamualaikum|permisi|ping)/)) {
+                    return "Halo! 👋 Aku **LibBot**, asisten AI PerpusSMK yang siap membantumu. Ada buku yang ingin dicari, butuh sinopsis, atau ingin bertanya soal jam operasional?";
                 }
+                if (query.includes('terima kasih') || query.includes('makasih') || query.includes('thank')) {
+                    return "Sama-sama! Senang bisa membantumu. Jangan sungkan bertanya lagi jika butuh info lain, ya! Tetap semangat belajarnya! 📚✨";
+                }
+
+                // 3. Intent Bertanya Jam Operasional
+                if (query.includes('jam') || query.includes('buka') || query.includes('tutup') || query.includes('operasional') || query.includes('jadwal')) {
+                    return "Perpustakaan **PerpusSMK** buka pada jadwal berikut:\n\n📅 **Senin - Kamis:** 07:00 - 15:00 WIB\n📅 **Jumat:** 07:00 - 11:00 WIB\n☕ *Jam Istirahat (Tutup Sementara): 12:00 - 13:00 WIB*.\n\nSilakan berkunjung di jam kerja ya!";
+                }
+
+                // 4. Intent Bertanya Aturan / Denda / Syarat Pinjam
+                if (query.includes('aturan') || query.includes('tata tertib') || query.includes('denda') || query.includes('syarat') || query.includes('cara pinjam') || query.includes('berapa hari') || query.includes('sanksi')) {
+                    return "Berikut tata tertib penting di **PerpusSMK**:\n\n1. Maksimal meminjam **3 buku** sekaligus.\n2. Batas waktu peminjaman adalah **7 hari**.\n3. Terlambat mengembalikan dikenakan denda administratif **Rp500/hari** per buku.\n4. Siswa wajib menjaga kebersihan dan dilarang membawa makanan/minuman ke meja baca.";
+                }
+
+                // 5. Intent Bertanya Pengelola / Pustakawan
+                if (query.includes('pustakawan') || query.includes('petugas') || query.includes('pengelola') || query.includes('budiarti') || query.includes('kepala')) {
+                    return "Perpustakaan PerpusSMK dikelola secara profesional oleh **Ibu Budiarti, S.I.Pust.** selaku Kepala Pustakawan Sekolah kita. Beliau sangat ramah dan siap membantumu di meja sirkulasi!";
+                }
+
+                // 6. Intent Sinopsis / Deskripsi Detail Buku (Fitur Baru)
+                const isAskingDescription = query.includes('sinopsis') || query.includes('isi') || query.includes('jelaskan') || query.includes('deskripsi') || query.includes('tentang');
+                
+                // Cari kecocokan buku spesifik
+                const matchedBook = libraryBooks.find(b => {
+                    const titleWords = b.title.toLowerCase().split(' ');
+                    // Cocokkan jika judul buku terkandung dalam teks atau kata kunci utama cocok
+                    return query.includes(b.title.toLowerCase()) || 
+                           (query.includes(' bandit') && b.id === 2) ||
+                           (query.includes('badai') && b.id === 3) ||
+                           (query.includes('branding') && b.id === 4) ||
+                           (query.includes('brief') && b.id === 5) ||
+                           (query.includes('administrasi') && b.id === 6) ||
+                           ((query.includes('gim') || query.includes('perangkat lunak')) && b.id === 1);
+                });
 
                 if (matchedBook) {
-                    if (matchedBook.status === 'Tersedia') {
-                        return `Ada kok! 😊 Buku **${matchedBook.title}** karya *${matchedBook.author}* saat ini berstatus **${matchedBook.status}**. Kamu bisa langsung mengambilnya di **${matchedBook.shelf}**.`;
+                    if (isAskingDescription) {
+                        return `Tentu! Buku **"${matchedBook.title}"** karya *${matchedBook.author}* membahas:\n\n"${matchedBook.description}"\n\n📌 **Lokasi:** ${matchedBook.shelf}\n⚡ **Status:** ${matchedBook.status}`;
                     } else {
-                        // Cari alternatif bergenre sejenis
-                        const alt = libraryBooks.find(b => b.category === matchedBook.category && b.status === 'Tersedia');
-                        let reply = `Aduh, mohon maaf sekali. Buku **${matchedBook.title}** saat ini sedang **Dipinjam** oleh siswa lain. 😢\n\n`;
-                        if (alt) {
-                            reply += `Sebagai alternatif, aku sangat merekomendasikan buku **${alt.title}** karya *${alt.author}* yang juga membahas kategori *${alt.category}*. Buku ini **Tersedia** di **${alt.shelf}**!`;
+                        // Tanya ketersediaan umum
+                        if (matchedBook.status === 'Tersedia') {
+                            return `Kabar baik! Buku **"${matchedBook.title}"** karya *${matchedBook.author}* berstatus **Tersedia**. Kamu bisa langsung mengambilnya di **${matchedBook.shelf}**. \n\nApakah kamu mau aku jelaskan sinopsis singkat isi bukunya?`;
                         } else {
-                            reply += "Coba tanyakan buku kategori lain yang menarik minatmu!";
+                            // Carikan buku alternatif kategori sejenis
+                            const alt = libraryBooks.find(b => b.category === matchedBook.category && b.status === 'Tersedia');
+                            let responseText = `Waduh, maaf sekali. Buku **"${matchedBook.title}"** saat ini sedang **Dipinjam**. 😢\n\n`;
+                            if (alt) {
+                                responseText += `Sebagai alternatif di kategori **${matchedBook.category}**, aku merekomendasikan buku **"${alt.title}"** (*${alt.author}*) yang berstatus **Tersedia** di **${alt.shelf}**.\n\nMau kuambilkan buku alternatifnya?`;
+                            } else {
+                                responseText += `Silakan cari buku kategori lain di tab katalog atau hubungi Ibu Budiarti untuk melakukan inden antrean buku ini.`;
+                            }
+                            return responseText;
                         }
-                        return reply;
                     }
                 }
 
-                if (query.includes('python') || query.includes('komputer') || query.includes('koding') || query.includes('it')) {
-                    return "Ada banget! 😊 Saat ini tersedia buku **Dasar Pemrograman Python** (Tersedia di Rak K-01) dan **Python untuk Pemula & Menengah** (Sedang Dipinjam). Kamu mau fokus mempelajari logika dasar coding atau langsung praktek membuat aplikasi?";
+                // 7. Intent Rekomendasi Kategori / Umum
+                if (query.includes('rekomendasi') || query.includes('rekomendasikan') || query.includes('saran') || query.includes('bagus') || query.includes('populer')) {
+                    if (query.includes('it') || query.includes('gim') || query.includes('coding') || query.includes('pplg')) {
+                        const book = libraryBooks.find(b => b.id === 1);
+                        return `Untuk kategori **IT/Pemrograman**, rekomendasi utama adalah **"${book.title}"** karya *${book.author}* di **${book.shelf}**. Membahas dasar algoritma yang sangat mudah dipahami pemula.`;
+                    }
+                    if (query.includes('novel') || query.includes('fiksi') || query.includes('cerita')) {
+                        const book = libraryBooks.find(b => b.id === 2);
+                        return `Suka cerita petualangan seru? Kamu wajib membaca novel **"${book.title}"** karya *${book.author}* di **${book.shelf}**. Kisahnya sangat memotivasi dan penuh misteri menegangkan!`;
+                    }
+                    if (query.includes('pengembangan diri') || query.includes('mental') || query.includes('psikologi')) {
+                        const book = libraryBooks.find(b => b.id === 3);
+                        return `Jika mencari motivasi diri, coba baca **"${book.title}"** karya *${book.author}* di **${book.shelf}**. Sangat pas untuk merenung dan mengelola kecemasan anak remaja.`;
+                    }
+                    
+                    // Rekomendasi umum buku acak yang tersedia
+                    const availableBooks = libraryBooks.filter(b => b.status === 'Tersedia');
+                    const recommended = availableBooks[Math.floor(Math.random() * availableBooks.length)];
+                    return `Ini salah satu rekomendasi buku terbaik hari ini yang **Tersedia** untuk dipinjam:\n\n📖 **"${recommended.title}"** oleh *${recommended.author}* (${recommended.category}).\n\n**Sinopsis singkat:** ${recommended.description}\n\nKamu bisa mengambilnya langsung di **${recommended.shelf}**!`;
                 }
 
-                return "Aku mengerti! Sebagai asisten perpustakaan pintar, aku bisa membantumu mencari info ketersediaan buku, letak rak, atau jam buka perpustakaan. Ada hal yang bisa kubantu sekarang? 😊";
+                // 8. Pencarian Kategori Umum
+                if (query.includes('it') || query.includes('pplg') || query.includes('gim')) {
+                    return "Untuk kategori **IT**, kita memiliki buku *\"Dasar-Dasar Pengembangan Perangkat Lunak dan Gim\"* di Rak IT-01. Buku ini sangat cocok untuk memulai dasar belajar pemrograman!";
+                }
+                if (query.includes('novel') || query.includes('fiksi')) {
+                    return "Di kategori **Novel**, kita punya buku terlaris *\"Tanah Para Bandit\"* karya Tere Liye (Rak NV-01) dan buku emosional *\"Manusia dan Badainya\"* karya Syahid Muhammad (Rak NV-02).";
+                }
+
+                // 9. Fallback Default (Relevan Perpustakaan tapi polanya tidak spesifik)
+                return "Aku mengerti pertanyaanmu seputar perpustakaan. 😊 Namun, agar jawabanku lebih akurat, bolehkah kamu sebutkan judul buku yang ingin kamu cari secara spesifik? Atau tanyakan info jam kerja, denda, dan sinopsis buku ke aku!";
             }
         }
 
@@ -560,7 +683,8 @@
                             ${statusBadge}
                         </div>
                         <h4 class="font-bold text-slate-800 dark:text-white mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">${book.title}</h4>
-                        <p class="text-xs text-slate-400 dark:text-slate-500 mb-4">Penulis: ${book.author}</p>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 mb-2">Penulis: ${book.author}</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-3 mb-4 italic">"${book.description}"</p>
                     </div>
                     
                     <div class="flex items-center justify-between pt-3.5 border-t border-slate-100 dark:border-slate-800 text-xs">
@@ -589,12 +713,8 @@
             renderKatalog();
         }
 
-        // Shortcut dari Katalog langsung menuliskan pesan ke chatbot
-        function askBotAboutBook(title) {
-            switchView('chat');
-            document.getElementById('chatInput').value = `Apakah buku "${title}" saat ini siap untuk kupinjam?`;
-            handleSendMessage();
-        }
+        // Shortcut dari Katalog langsung menuliskan pesan ke chatbot menanyakan deskripsi & ketersediaan sekaligus
+        function askBotAboutBook(title) { switchView('chat'); document.getElementById('chatInput').value = `Berikan informasi lengkap mengenai buku "${title}", termasuk sinopsis, status ketersediaan, dan lokasi raknya.`; handleSendMessage(); }
 
         function openSettingsModal() {
             document.getElementById('apiEngine').value = localStorage.getItem('libbot_api_engine') || 'offline';
